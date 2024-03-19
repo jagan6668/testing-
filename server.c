@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#define CLIENT_MSG_KEY 9707
+
 typedef struct employee {
     char first_name[20];
     char last_name[20];
@@ -19,7 +21,9 @@ typedef struct employee {
 
 Emp *ptr;
 static int fd;
+
 static int msgid;
+static int msgid2;
 
 typedef struct packet {
     Emp data;
@@ -35,14 +39,20 @@ typedef struct msg {
 
 m msg_buffer;
 
+m response;
+
+
+
+//response.type=
 void add_employee();
 void search();
 void records_with_skills();
 void records_with_experience();
 void *serve_client(void *p);
 void traverse();
-
+//response.pac.c=0;
 int main() {
+    response.pac.d=0;
     pthread_t tid;
     int key = 9706;
     msgid = msgget(key, IPC_CREAT | 0666);
@@ -50,13 +60,17 @@ int main() {
         perror("msgget");
         exit(EXIT_FAILURE);
     }
+  
+   msgid2=msgget(CLIENT_MSG_KEY,IPC_CREAT |0666);   // msgqueue from server to clinet .
+   if (msgid2==-1)
+      perror("error in creating message queeue from server to clinet ");
 
     fd = open("Employee.txt", O_WRONLY | O_CREAT | O_APPEND, 0666);
     if (fd == -1) {
         perror("open");
        
     }
-     printf("%d id  \n :",msgid);
+     printf(" msgid - %d , msgid2 - %d  \n :",msgid,msgid2);
     printf("Server started.\n");
 
     while (1) {
@@ -74,6 +88,7 @@ void *serve_client(void *p) {
      printf("%d \n ",msg_buffer.type);
 printf("Error in MSG Recieve");
     }
+ printf( "  CHECK %s\n ",msg_buffer.pac.data.last_name);
  printf("%d\n",msg_buffer.type); 
   
   switch (msg_buffer.pac.d) {
@@ -81,7 +96,7 @@ printf("Error in MSG Recieve");
 	    pthread_mutex_lock(&mutex);
             add_employee(&msg_buffer.pac.data);
 	    pthread_mutex_unlock(&mutex);
-            printf("adding employee type %d \n ",msg_buffer.type);
+           // printf("adding employee type %d \n ",msg_buffer.type);
             break;
         case 2:
 	    pthread_mutex_lock(&mutex);
@@ -115,31 +130,8 @@ printf("Hello");
    printf("adding employuee \n ");   
    printf(" \n %d",msg_buffer.type);
  }
-
-
-if ((msgrcv(msgid,&msg_buffer,sizeof(struct packet),2,0)!=-1) && msg_buffer.pac.d==2 && msg_buffer.type==2)
- {
-  search();
-  printf("searched \n :");
-  printf("%d \n ",msg_buffer.type);
-}
-
-
-if ((msgrcv(msgid,&msg_buffer,sizeof(struct packet),3,0)!=-1) && msg_buffer.pac.d==3 && msg_buffer.type==3)
- {
-records_with_skills();
-printf("records with skills are recordedd \n :");
-printf("%d \n ",msg_buffer.type);
-}
-
-
-if ((msgrcv(msgid,&msg_buffer,sizeof(struct packet),4,0)!=-1) && msg_buffer.pac.d==4 && msg_buffer.type==4)
- {
-records_with_experience();
-printf("  rerc \n ");
-printf("%d \n ",msg_buffer.type);
-}
 */
+
 pthread_exit(NULL);
 
 }
@@ -170,11 +162,10 @@ temp=temp->next;
 }
 temp->next=node;
 }
-printf("%p",ptr);
+//printf("%p",ptr);
 
-//printf("%s %s %s %s %d %d \n ",ptr->first_name,ptr->last_name,ptr->skills,ptr->project,ptr->experience,ptr->emp_id);
-// printf(" temp ->next %p \n ",temp->next);
 traverse();
+
 }
 
 void traverse(){
@@ -185,19 +176,27 @@ while (temp !=NULL)
 printf("%s %s %s %s %d %d \n ",temp->first_name,temp->last_name,temp->skills,temp->project,temp->experience,temp->emp_id);
 temp=temp->next;
 }
+
 }
 
 void search() {
 Emp *temp=ptr;
-
+response.type=CLIENT_MSG_KEY;
 printf("inside seardch \n :");
 while(temp!=NULL)
 {
  if (strcmp(temp->first_name,msg_buffer.pac.data.first_name)==0)
  {
- printf("found \n ");
-// if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),2)!=0)
-  // perror("error in sneding \n ");
+     printf("found \n ");
+     strcpy(response.pac.data.first_name,temp->first_name);
+     strcpy(response.pac.data.last_name,temp->last_name);
+     strcpy(response.pac.data.skills,temp->skills);
+     strcpy(response.pac.data.project,temp->project);
+     strcpy(response.pac.data.experience,temp->experience);
+     strcpy(response.pac.data.contact,temp->contact);
+     strcpy(response.pac.c,'\0');
+    if (msgsnd(msgid2,&response,sizeof(struct packet),0)!=0)
+       perror("error in sneding \n ");
  break;
  }
  if(strcmp(temp->last_name,msg_buffer.pac.data.last_name)==0)

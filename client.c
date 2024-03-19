@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <stdbool.h>
-
+#define CLIENT_MSG_KEY 9707
 typedef struct employee {
     char first_name[20];
     char last_name[20];
@@ -30,6 +30,8 @@ typedef struct msg {
 } m;
 m msg_buffer;
 int msgid;
+static int msgid2;
+m response;
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 
 void *client_thread(void *arg);
@@ -52,7 +54,7 @@ msg_buffer.type = getpid();
 pthread_t tid; // Thread ID for each client
 
     int client_id =1;
-     
+    msgid2=msgget(CLIENT_MSG_KEY,IPC_CREAT|0666);     
     while (1) {
        
         if (pthread_create(&tid, NULL, client_thread,(void *)client_id) != 0) {
@@ -173,13 +175,11 @@ scanf("%[^\n]s",msg_buffer.pac.data.first_name);
 getchar();
 msg_buffer.pac.d=2;
 msg_buffer.pac.c='\0';
-if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
+if (msgsnd(msgid,&msg_buffer,sizeof(msg_buffer.pac.data.first_name),0)==-1)
     perror("eror in sending info \n ");
 else
  printf("sent correctly \n ");
 
-if (msgrcv(msgid,&msg_buffer,sizeof(struct packet),2,0)!=-1)
-    perror("error on receoving daata \n ");
 break;
 
 case 2:
@@ -194,6 +194,16 @@ printf("sent corectly \n : ");
 break;
 
 }
+if (msgrcv(msgid2,&response,sizeof(struct packet),CLIENT_MSG_KEY,0)!=-1)
+{
+   printf(" These are the details \n : ");
+   printf("%s %s %s %s %d %d \n ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.contact,response.pac.data.emp_id,response.pac.data.experience);
+}
+else
+{
+printf(" failed in revceiving from server to client \n ");
+}
+
 }
 
 
