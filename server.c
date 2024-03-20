@@ -44,10 +44,10 @@ m response;
 
 
 //response.type=
-void add_employee();
+void add_employee(Emp* record);
 void search();
-void records_with_skills();
-void records_with_experience();
+void records_with_skills(char *skills);
+void records_with_experience(int experience);
 void *serve_client(void *p);
 void traverse();
 //response.pac.c=0;
