@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 #define CLIENT_MSG_KEY 9707
+
 typedef struct employee {
     char first_name[20];
     char last_name[20];
@@ -30,7 +31,7 @@ typedef struct msg {
 } m;
 m msg_buffer;
 int msgid;
-static int msgid2;
+int msgid2;
 m response;
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 
@@ -85,30 +86,29 @@ void *client_thread(void *arg) {
 
     switch (choice) {
         case 1:
-	    pthread_mutex_lock(&mutex);
+	   
             msg_buffer.pac.d = 1; // Add Employee
             employee_thread();
- 	    pthread_mutex_unlock(&mutex);
+ 	   
             break;
         case 2:
-	    pthread_mutex_lock(&mutex);
+	   
             msg_buffer.pac.d = 2; // Search
             search_thread();
-            pthread_mutex_unlock(&mutex);
-            
+                 
             break;
-        case 3:
-            pthread_mutex_lock(&mutex);
+       case 3:
+           
             msg_buffer.pac.d = 3; // Records with Skills
             records_with_skills();
-	    pthread_mutex_unlock(&mutex);
+	   
             break;
             
         case 4:
-	    pthread_mutex_lock(&mutex);
+	   
             msg_buffer.pac.d = 4; // Records with Experience
             records_with_experience();
-	    pthread_mutex_unlock(&mutex);
+	    
             break;
         default:
             printf("Client %d: Invalid choice\n", client_id);
@@ -164,8 +164,7 @@ printf("%d",msgid);
 printf("enter the choiceof searching 1 :first_name  2 :last_name 3: empid \n ");
 scanf("%d",&c);
 getchar();
-msg_buffer.pac.d=2;
-printf("%d\n",msg_buffer.pac.d);
+
 switch(c)
 {
 case 1 :
@@ -186,6 +185,7 @@ case 2:
 printf("enter last name \n ");
 scanf("%[^\n]s",msg_buffer.pac.data.last_name);
 getchar();
+msg_buffer.pac.d=2;
 msg_buffer.pac.c='\0';
 if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
    perror("error in sending \n ");

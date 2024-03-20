@@ -88,15 +88,16 @@ void *serve_client(void *p) {
      printf("%d \n ",msg_buffer.type);
 printf("Error in MSG Recieve");
     }
- printf( "  CHECK %s\n ",msg_buffer.pac.data.last_name);
+puts(msg_buffer.pac.data.first_name); 
+printf( "  CHECK msg_buffer.pac.data.frst_name :  %s\n ",msg_buffer.pac.data.first_name);
  printf("%d\n",msg_buffer.type); 
-  
+ printf(" msg .d %d \n ",msg_buffer.pac.d); 
   switch (msg_buffer.pac.d) {
         case 1:
 	    pthread_mutex_lock(&mutex);
             add_employee(&msg_buffer.pac.data);
 	    pthread_mutex_unlock(&mutex);
-           // printf("adding employee type %d \n ",msg_buffer.type);
+            printf("adding employee type %d \n ",msg_buffer.type);
             break;
         case 2:
 	    pthread_mutex_lock(&mutex);
@@ -158,14 +159,10 @@ else
 Emp *temp=ptr;
 while(temp->next!=NULL){
 temp=temp->next;
-
 }
 temp->next=node;
 }
-//printf("%p",ptr);
-
 traverse();
-
 }
 
 void traverse(){
@@ -176,8 +173,9 @@ while (temp !=NULL)
 printf("%s %s %s %s %d %d \n ",temp->first_name,temp->last_name,temp->skills,temp->project,temp->experience,temp->emp_id);
 temp=temp->next;
 }
-
 }
+
+
 
 void search() {
 Emp *temp=ptr;
@@ -188,7 +186,7 @@ while(temp!=NULL)
  if (strcmp(temp->first_name,msg_buffer.pac.data.first_name)==0)
  {
      printf("found \n ");
-     strcpy(response.pac.data.first_name,temp->first_name);
+    strcpy(response.pac.data.first_name,temp->first_name);
      strcpy(response.pac.data.last_name,temp->last_name);
      strcpy(response.pac.data.skills,temp->skills);
      strcpy(response.pac.data.project,temp->project);
@@ -197,13 +195,24 @@ while(temp!=NULL)
      strcpy(response.pac.c,'\0');
     if (msgsnd(msgid2,&response,sizeof(struct packet),0)!=0)
        perror("error in sneding \n ");
+
  break;
  }
  if(strcmp(temp->last_name,msg_buffer.pac.data.last_name)==0)
  {
  printf("found \n ");
-  //if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),2)!=0)
-    //perror("error in sending back \n ");
+  strcpy(response.pac.data.first_name,temp->first_name);
+  strcpy(response.pac.data.last_name,temp->last_name);
+  strcpy(response.pac.data.skills,temp->skills);
+  strcpy(response.pac.data.project,temp->project);
+  strcpy(response.pac.data.contact,temp->contact);
+  response.pac.data.experience=temp->experience;
+  response.pac.data.emp_id=temp->emp_id;
+  
+  printf("TRAIL %s \n " ,response.pac.data.first_name);
+  printf("TRAIL %s \n ",response.pac.data.last_name);
+  if (msgsnd(msgid2,&response ,sizeof(struct packet),0)!=0)
+    perror("error in sending back \n ");
  break;
  }
 temp=temp->next;
