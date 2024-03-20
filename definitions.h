@@ -29,8 +29,8 @@ typedef struct msg {
     struct packet pac;
 } m;
 
-extern m msg_buffer;
-extern m response;
+ extern m  msg_buffer;
+ extern m response;
 extern int msgid;
 extern int msgid2;
 extern int fd;

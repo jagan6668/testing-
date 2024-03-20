@@ -7,18 +7,18 @@
 #include<stdlib.h>
 
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
-extern m msg_buffer;
-extern m response;
+ m msg_buffer;
+ m response;
 Emp *ptr;
-//extern int fd;
+int fd;
 
 
-//extern int msgid;
-//extern int msgid2;
+int msgid;
+int msgid2;
 
 int main()
 {
-msg_buffer.data.pac.d=0;
+msg_buffer.pac.d=0;
     pthread_t tid;
     int key = 9706;
     msgid = msgget(key, IPC_CREAT | 0666);
