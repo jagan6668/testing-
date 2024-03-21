@@ -190,11 +190,13 @@ while(temp!=NULL)
      strcpy(response.pac.data.last_name,temp->last_name);
      strcpy(response.pac.data.skills,temp->skills);
      strcpy(response.pac.data.project,temp->project);
-     strcpy(response.pac.data.experience,temp->experience);
+     response.pac.data.experience=temp->experience;
      strcpy(response.pac.data.contact,temp->contact);
-     strcpy(response.pac.c,'\0');
+     response.pac.c =0;
     if (msgsnd(msgid2,&response,sizeof(struct packet),0)!=0)
        perror("error in sneding \n ");
+    else
+	printf("sent back to client successfully \n ");
 
  break;
  }
@@ -208,7 +210,7 @@ while(temp!=NULL)
   strcpy(response.pac.data.contact,temp->contact);
   response.pac.data.experience=temp->experience;
   response.pac.data.emp_id=temp->emp_id;
-  
+  response.pac.c=0; 
   printf("TRAIL %s \n " ,response.pac.data.first_name);
   printf("TRAIL %s \n ",response.pac.data.last_name);
   if (msgsnd(msgid2,&response ,sizeof(struct packet),0)!=0)

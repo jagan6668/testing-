@@ -215,7 +215,19 @@ scanf("%s",msg_buffer.pac.data.skills);
 if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
    perror("error in sending \n ");
 else 
-printf("sent correctly \n :");
+    printf("sent correctly \n :");
+
+if (msgrcv(msgid2,&response,sizeof(struct packet),0,0)==0)
+{
+// if (strcmp(response.pac.data.last_name,"exit")==0)
+  //     return ;
+  printf("First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
+}
+else
+{
+perror("error in receiving \n ");
+}
+
 }
 
 
@@ -229,6 +241,20 @@ if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
  perror("error in sending \n ");
 else 
 printf("sent correctly \n :");
+
+if (msgrcv(msgid2,&response,sizeof(Packet),0,0)==0)
+{
+ //if(strcmp(response.pac.data.last_name,"exit")==0)
+  //return ;
+ //else 
+  printf("First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
+
+}
+
+else 
+ perror("error in receiving \n : ");
+
+
 }
 
 
