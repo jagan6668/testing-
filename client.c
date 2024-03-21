@@ -75,7 +75,6 @@ pthread_t tid; // Thread ID for each client
 void *client_thread(void *arg) {
     int client_id =(int)arg;
     printf("Client %d started.\n", client_id);
-
     int choice;
     printf("Client %d: Enter your choice:\n",client_id);
     printf("1. Add Employee\n");
@@ -217,7 +216,7 @@ if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
 else 
     printf("sent correctly \n :");
 
-if (msgrcv(msgid2,&response,sizeof(struct packet),0,0)==0)
+if (msgrcv(msgid2,&response,sizeof(struct packet),CLIENT_MSG_KEY,0)==0)
 {
 // if (strcmp(response.pac.data.last_name,"exit")==0)
   //     return ;
@@ -241,8 +240,8 @@ if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
  perror("error in sending \n ");
 else 
 printf("sent correctly \n :");
-
-if (msgrcv(msgid2,&response,sizeof(Packet),0,0)==0)
+//printf("%s %s ",response.pac.data.first_name,response.pac.data.last_name);
+if (msgrcv(msgid2,&response,sizeof(Packet),CLIENT_MSG_KEY,0)==0)
 {
  //if(strcmp(response.pac.data.last_name,"exit")==0)
   //return ;

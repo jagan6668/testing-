@@ -70,7 +70,7 @@ while(temp!=NULL)
  }
  if(strcmp(temp->last_name,msg_buffer.pac.data.last_name)==0)
  {
- printf("found \n ");
+  printf("found \n ");
   strcpy(response.pac.data.first_name,temp->first_name);
   strcpy(response.pac.data.last_name,temp->last_name);
   strcpy(response.pac.data.skills,temp->skills);
@@ -78,7 +78,7 @@ while(temp!=NULL)
   strcpy(response.pac.data.contact,temp->contact);
   response.pac.data.experience=temp->experience;
   response.pac.data.emp_id=temp->emp_id;
-  response.pac.c=0;
+  response.pac.c='\0';
   printf("TRAIL %s \n " ,response.pac.data.first_name);
   printf("TRAIL %s \n ",response.pac.data.last_name);
   if (msgsnd(msgid2,&response ,sizeof(Packet),0)!=0)
@@ -97,6 +97,7 @@ temp=temp->next;
 }
 
 void records_with_skills(char* skills) {
+response.type=CLIENT_MSG_KEY;
 
 printf("inside th records_with_skills \n ");
 Emp *temp=ptr;
@@ -112,10 +113,10 @@ strcpy(response.pac.data.skills,temp->skills);
 strcpy(response.pac.data.project,temp->project);
 response.pac.data.experience=temp->experience;
 response.pac.data.emp_id=temp->emp_id;
-response.pac.c=0;
-response.type=getpid();
+response.pac.c='\0';
+response.type=CLIENT_MSG_KEY;
 
-printf(" CHECH ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
+printf(" CHECK ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
   if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
   {
    printf("send sucessfully to client \n :");
@@ -136,10 +137,13 @@ else
   {
   perror("error in sending acknowledge \n ");
   }
+
 }
 
 void records_with_experience(int experience) {
     // Implementation of records_with_experience function
+response.type=CLIENT_MSG_KEY;
+
 printf("inisde tht records_with_experience \n :");
 Emp *temp=ptr;
 while(temp!=NULL)
@@ -165,6 +169,7 @@ while(temp!=NULL)
 
  temp=temp->next;
 }
+
 strcpy(response.pac.data.last_name,"exit");
 if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
  printf("succesfully Acknowledged as end of data \n ");
