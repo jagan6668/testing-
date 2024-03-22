@@ -14,7 +14,7 @@ typedef struct employee {
     struct employee *next;
 } Emp;
 
-extern Emp *ptr;
+
 
 typedef struct packet {
     Emp data;

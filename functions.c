@@ -6,6 +6,7 @@
 #include<fcntl.h>
 #include<string.h>
 #include<sys/msg.h>
+static Emp *ptr=NULL;
 
 void add_employee(Emp* record) {
 Emp *node=(Emp *)malloc(sizeof(Emp));
@@ -18,7 +19,6 @@ node->emp_id=record->emp_id;
 node->experience=record->experience;
 node->next=NULL;
 write(fd,node,sizeof(Emp));
-printf("inside employee adding \n ");
 
 if (ptr==NULL)
 {
@@ -37,9 +37,18 @@ traverse();
 
 void traverse(){
 Emp *temp=ptr;
-printf(" \n %p",temp);
 while (temp !=NULL)
 {
+strcpy(response.pac.data.first_name,temp->first_name);
+
+strcpy(response.pac.data.first_name,temp->first_name);
+strcpy(response.pac.data.contact,temp->contact);
+strcpy(response.pac.data.skills,temp->skills);
+strcpy(response.pac.data.project,temp->project);
+response.pac.data.emp_id=temp->emp_id;
+response.pac.data.experience=temp->experience;
+strcpy(response.pac.data.last_name,temp->last_name);
+
 printf("%s %s %s %s %d %d \n ",temp->first_name,temp->last_name,temp->skills,temp->project,temp->experience,temp->emp_id);
 temp=temp->next;
 }
@@ -49,12 +58,13 @@ temp=temp->next;
 
 void search() {
 Emp *temp=ptr;
-response.type=CLIENT_MSG_KEY;
-printf("inside seardch \n :");
+
+if (msg_buffer.pac.d==21)
+{
 while(temp!=NULL)
 {
  if (strcmp(temp->first_name,msg_buffer.pac.data.first_name)==0)
- {
+  {
      printf("found \n ");
      strcpy(response.pac.data.first_name,temp->first_name);
      strcpy(response.pac.data.last_name,temp->last_name);
@@ -64,16 +74,22 @@ while(temp!=NULL)
      strcpy(response.pac.data.contact,temp->contact);
      response.type = msg_buffer.type;
      response.pac.d=0;
-     printf("%d\n",response.type);
      response.pac.c='\0';
      if (msgsnd(msgid2,&response,sizeof(Packet),0)!=0)
        perror("error in sneding \n ");
-
       break;
- }
+   }
+temp=temp->next;
+}
+}
+else if(msg_buffer.pac.d==22)
+{
+Emp *ptr=temp;
+while (temp!=NULL)
+{
  if(strcmp(temp->last_name,msg_buffer.pac.data.last_name)==0)
  {
-  printf("Clien :  %d found \n ",msg_buffer.type );
+  printf("Clien :  %d \n ",msg_buffer.type );
   strcpy(response.pac.data.first_name,temp->first_name);
   strcpy(response.pac.data.last_name,temp->last_name);
   strcpy(response.pac.data.skills,temp->skills);
@@ -84,27 +100,20 @@ while(temp!=NULL)
   response.pac.c='\0';
   response.pac.d=0;
   response.type=msg_buffer.type;
-  printf("TRAIL %s \n " ,response.pac.data.first_name);
-  printf("TRAIL %s \n ",response.pac.data.last_name);
   if (msgsnd(msgid2,&response ,sizeof(Packet),0)!=0)
     perror("error in sending back \n ");
   else
-{
-printf("sent back to client succesfully \n :");
-}
-
- break;
+   printf("sent back to client succesfully \n :");
+  break;
  }
 temp=temp->next;
 
 }
-
+}
 }
 
-void records_with_skills(char* skills) {
-response.type=CLIENT_MSG_KEY;
-
-printf("inside th records_with_skills \n ");
+void records_with_skills(char* skills)
+{
 Emp *temp=ptr;
 while(temp!=NULL)
 {
@@ -121,23 +130,22 @@ response.pac.data.emp_id=temp->emp_id;
 response.pac.c='\0';
 response.type=msg_buffer.type;
 response.pac.d='\0';
-
-printf(" CHECK ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
-  if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
+ 
+ if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
   {
-   printf("send sucessfully to client \n :");
+
+	printf("-> send sucessfully to client \n :");
   }
    else
-   {
-    perror("error in sending \n ");
-    }
+       perror("error in sending \n ");
+   
 }
-temp=temp->next;
+ temp=temp->next;
 }
  strcpy(response.pac.data.last_name,"exit");
  if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
   {
-    printf(" succesfully acknowledged to client as end of data \n ");
+    printf("-> succesfully acknowledged to client as end of data \n ");
   }
 else
   {
@@ -146,11 +154,8 @@ else
 
 }
 
-void records_with_experience(int experience) {
-    // Implementation of records_with_experience function
-response.type=CLIENT_MSG_KEY;
-
-printf("inisde tht records_with_experience \n :");
+void records_with_experience(int experience) 
+{
 Emp *temp=ptr;
 while(temp!=NULL)
 {
@@ -164,11 +169,11 @@ while(temp!=NULL)
    response.pac.data.emp_id=temp->emp_id;
    strcpy(response.pac.data.contact,temp->contact);
    response.pac.c=0;
-   response.type=getpid();
-   printf(" CHECH ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
+   response.type=msg_buffer.type;
+  // printf(" CHECH ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
    
    if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
-   printf(" succesfully sent to client \n ");
+   printf(" -> succesfully sent to client \n ");
   else
    perror("error in sending \n ");      
   }
@@ -178,7 +183,7 @@ while(temp!=NULL)
 
 strcpy(response.pac.data.last_name,"exit");
 if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
- printf("succesfully Acknowledged as end of data \n ");
+ printf("-> succesfully Acknowledged as end of data \n ");
 else
  perror("error in sending acknowledgement \n ");
 

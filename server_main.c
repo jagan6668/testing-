@@ -61,18 +61,18 @@ printf( "  CHECK msg_buffer.pac.data.frst_name :  %s\n ",msg_buffer.pac.data.fir
 	    pthread_mutex_lock(&mutex);
             add_employee(&msg_buffer.pac.data);
 	    pthread_mutex_unlock(&mutex);
-            printf("adding employee type %d \n ",msg_buffer.type);
+
             break;
-        case 2:
+        case 21:
+        case 22:
 	    pthread_mutex_lock(&mutex);
             search();
-	    printf("Searching \n ");
 	    pthread_mutex_unlock(&mutex);
             break;
         case 3:
 	    pthread_mutex_lock(&mutex);
+            printf("records with skills \n :");
             records_with_skills(msg_buffer.pac.data.skills);
-	    printf("Records with skills \n ");
 	    pthread_mutex_unlock(&mutex);
             break;
         case 4:

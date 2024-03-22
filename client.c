@@ -50,9 +50,8 @@ int main() {
         perror("msgget");
         exit(EXIT_FAILURE);
     }
-     printf("%d id \n :",msgid);
 msg_buffer.type = getpid();
-printf("Client - %d\n",getpid());    
+printf("Client Id - %d\n",getpid());    
 pthread_t tid; // Thread ID for each client
 
     int client_id =1;
@@ -93,7 +92,7 @@ void *client_thread(void *arg) {
             break;
         case 2:
 	   
-            msg_buffer.pac.d = 2; // Search
+            //msg_buffer.pac.d = 2; // Search
             search_thread();
                  
             break;
@@ -123,22 +122,22 @@ void *client_thread(void *arg) {
 void employee_thread()
 {
 
-printf("enter first_name \n");
+printf("enter first_name : \n");
 getchar();
 scanf("%s",msg_buffer.pac.data.first_name);
-printf("enter last name \n");
+printf("enter last name : \n");
 scanf("%s",msg_buffer.pac.data.last_name);
 getchar();
-printf("enter contact \n ");
+printf("enter contact : \n ");
 scanf("%s",msg_buffer.pac.data.contact);
 getchar();
-printf("enter skills \n ");
+printf("enter skills : \n ");
 scanf("%s",msg_buffer.pac.data.skills);
 getchar();
-printf("enter the employeee id \n ");
+printf("enter the employeee id : \n ");
 scanf("%d",&(msg_buffer.pac.data.emp_id));
 getchar();
-printf("enter the experience \n ");
+printf("enter the experience : \n ");
 scanf("%d",&msg_buffer.pac.data.experience);
 getchar();
 printf("enter the project \n ");
@@ -146,13 +145,12 @@ scanf("%s",&msg_buffer.pac.data.project);
 getchar();
 
 msg_buffer.pac.c='\0';
-msg_buffer.type=1;
 if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
 {
   perror("error in sending \n ");
  }
 else{
-printf("sent correctly");
+printf("-> sent correctly");
 }
 }
 
@@ -169,15 +167,15 @@ switch(c)
 {
 case 1 :
 printf("enter first_name \n ");
-getchar();
+//getchar();
 scanf("%[^\n]s",msg_buffer.pac.data.first_name);
-getchar();
-msg_buffer.pac.d=2;
+//getchar();
+msg_buffer.pac.d=21;
 msg_buffer.pac.c='\0';
-if (msgsnd(msgid,&msg_buffer,sizeof(msg_buffer.pac.data.first_name),0)==-1)
+if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
     perror("eror in sending info \n ");
 else
- printf("sent correctly \n ");
+ printf("-> sent correctly \n ");
 
 break;
 
@@ -185,23 +183,23 @@ case 2:
 printf("enter last name \n ");
 scanf("%[^\n]s",msg_buffer.pac.data.last_name);
 getchar();
-msg_buffer.pac.d=2;
+msg_buffer.pac.d=22;
 msg_buffer.pac.c='\0';
 if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
    perror("error in sending \n ");
 else 
-printf("sent corectly \n : ");
+printf("-> sent corectly \n : ");
 break;
 
 }
 if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)!=-1)
 {
    printf(" These are the details \n : ");
-   printf("%s %s %s %s %d %d \n ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.contact,response.pac.data.emp_id,response.pac.data.experience);
+   printf(" ***********\n %s %s %s %s %d %d \n*********** \n  ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.contact,response.pac.data.emp_id,response.pac.data.experience);
 }
 else
 {
-printf(" failed in revceiving from server to client \n ");
+perror(" failed in revceiving from server to client \n ");
 }
 
 }
@@ -215,20 +213,24 @@ scanf("%s",msg_buffer.pac.data.skills);
 if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
    perror("error in sending \n ");
 else 
-    printf("sent correctly \n :");
+    printf("-> sent correctly \n :");
 
-if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)==0)
+while(1)
 {
-// if (strcmp(response.pac.data.last_name,"exit")==0)
-  //     return ;
-  printf("First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
+if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)!=-1)
+{
+  printf(" TYPE %d \n  " ,response.type);
+   if (strcmp(response.pac.data.last_name,"exit")==0)
+    break;
+
+ printf("*************** \n First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d \n ****************** \n ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
 }
 else
-{
 perror("error in receiving \n ");
-}
 
 }
+}
+
 
 
 void records_with_experience()
@@ -241,21 +243,22 @@ if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
  perror("error in sending \n ");
 else 
 printf("sent correctly \n :");
-//printf("%s %s ",response.pac.data.first_name,response.pac.data.last_name);
-if (msgrcv(msgid2,&response,sizeof(Packet),getpid(),0)==0)
-{
- //if(strcmp(response.pac.data.last_name,"exit")==0)
-  //return ;
- //else 
-  printf("First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
 
+
+while(1)
+{
+if (msgrcv(msgid2,&response,sizeof(Packet),getpid(),0)!=-1)
+{
+ if(strcmp(response.pac.data.last_name,"exit")==0)
+  break  ;
+ else 
+  printf(" *************** \n First name : %s \n Last name : %s \n Skills : %s \n Project : %s \n Emp_id : %d \n ************* \n  ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.project,response.pac.data.emp_id);
 }
 
 else 
  perror("error in receiving \n : ");
 
-
 }
-
+}
 
 
