@@ -1,3 +1,4 @@
+
 #ifndef HEADER
 #define HEADER
 
@@ -41,6 +42,7 @@ void records_with_skills(char *skills);
 void records_with_experience(int experience);
 void *serve_client(void *p);
 void traverse();
-//response.pac.c=0;
+void sorting_with_emp_id();
+
 
 #endif    

@@ -40,7 +40,7 @@ void employee_thread();
 void search_thread();
 void records_with_skills();
 void records_with_experience();
-
+//void sorting_with_emp_id();
 
 int main() {
    
@@ -107,8 +107,13 @@ void *client_thread(void *arg) {
 	   
             msg_buffer.pac.d = 4; // Records with Experience
             records_with_experience();
-	    
             break;
+       /*case 5:
+
+           msg_buffer.pac.d=5;
+           sorting_with_emp_id();
+           break;*/
+
         default:
             printf("Client %d: Invalid choice\n", client_id);
             pthread_exit(NULL);
@@ -192,8 +197,12 @@ printf("-> sent corectly \n : ");
 break;
 
 }
+while(1)
+{
 if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)!=-1)
 {
+  if (strcmp(response.pac.data.contact,"exit")==0)
+  break;
    printf(" These are the details \n : ");
    printf(" ***********\n %s %s %s %s %d %d \n*********** \n  ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.contact,response.pac.data.emp_id,response.pac.data.experience);
 }
@@ -201,7 +210,7 @@ else
 {
 perror(" failed in revceiving from server to client \n ");
 }
-
+}
 }
 
 

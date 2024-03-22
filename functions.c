@@ -7,6 +7,7 @@
 #include<string.h>
 #include<sys/msg.h>
 static Emp *ptr=NULL;
+static emp_array[50];
 
 void add_employee(Emp* record) {
 Emp *node=(Emp *)malloc(sizeof(Emp));
@@ -77,10 +78,16 @@ while(temp!=NULL)
      response.pac.c='\0';
      if (msgsnd(msgid2,&response,sizeof(Packet),0)!=0)
        perror("error in sneding \n ");
-      break;
+     
    }
 temp=temp->next;
 }
+strcpy(response.pac.data.contact,"exit");
+ if (msgsnd(msgid2,&response,sizeof(Packet),0)!=0)
+    perror("error in receieving \n ");
+ else
+   printf("-> Succesfully sent aackonowleedged as end \n ");
+  
 }
 else if(msg_buffer.pac.d==22)
 {
@@ -187,5 +194,16 @@ if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)
 else
  perror("error in sending acknowledgement \n ");
 
+}
+
+void sorting_with_emp_id()
+{
+Emp *temp=ptr;
+int i=0;
+while(temp!=NULL)
+{
+ emp_array[i]=temp->emp_id;
+i++;
+}
 }
 
