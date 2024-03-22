@@ -55,9 +55,7 @@ void *serve_client(void *p) {
 printf("Error in MSG Recieve");
     }
 puts(msg_buffer.pac.data.first_name); 
-printf( "  CHECK msg_buffer.pac.data.frst_name :  %s\n ",msg_buffer.pac.data.first_name);
- printf("%d\n",msg_buffer.type); 
- printf(" msg .d %d \n ",msg_buffer.pac.d); 
+printf( "  CHECK msg_buffer.pac.data.frst_name :  %s\n ",msg_buffer.pac.data.first_name);  
   switch (msg_buffer.pac.d) {
         case 1:
 	    pthread_mutex_lock(&mutex);

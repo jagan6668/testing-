@@ -62,7 +62,10 @@ while(temp!=NULL)
      strcpy(response.pac.data.project,temp->project);
      response.pac.data.experience=temp->experience;
      strcpy(response.pac.data.contact,temp->contact);
-     response.pac.c=0;
+     response.type = msg_buffer.type;
+     response.pac.d=0;
+     printf("%d\n",response.type);
+     response.pac.c='\0';
      if (msgsnd(msgid2,&response,sizeof(Packet),0)!=0)
        perror("error in sneding \n ");
 
@@ -70,7 +73,7 @@ while(temp!=NULL)
  }
  if(strcmp(temp->last_name,msg_buffer.pac.data.last_name)==0)
  {
-  printf("found \n ");
+  printf("Clien :  %d found \n ",msg_buffer.type );
   strcpy(response.pac.data.first_name,temp->first_name);
   strcpy(response.pac.data.last_name,temp->last_name);
   strcpy(response.pac.data.skills,temp->skills);
@@ -79,6 +82,8 @@ while(temp!=NULL)
   response.pac.data.experience=temp->experience;
   response.pac.data.emp_id=temp->emp_id;
   response.pac.c='\0';
+  response.pac.d=0;
+  response.type=msg_buffer.type;
   printf("TRAIL %s \n " ,response.pac.data.first_name);
   printf("TRAIL %s \n ",response.pac.data.last_name);
   if (msgsnd(msgid2,&response ,sizeof(Packet),0)!=0)
@@ -114,7 +119,8 @@ strcpy(response.pac.data.project,temp->project);
 response.pac.data.experience=temp->experience;
 response.pac.data.emp_id=temp->emp_id;
 response.pac.c='\0';
-response.type=CLIENT_MSG_KEY;
+response.type=msg_buffer.type;
+response.pac.d='\0';
 
 printf(" CHECK ***  %s %s \n ",response.pac.data.first_name,response.pac.data.last_name);
   if (msgsnd(msgid2,&response,sizeof(Packet),0)==0)

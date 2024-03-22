@@ -51,7 +51,8 @@ int main() {
         exit(EXIT_FAILURE);
     }
      printf("%d id \n :",msgid);
-msg_buffer.type = getpid();    
+msg_buffer.type = getpid();
+printf("Client - %d\n",getpid());    
 pthread_t tid; // Thread ID for each client
 
     int client_id =1;
@@ -193,7 +194,7 @@ printf("sent corectly \n : ");
 break;
 
 }
-if (msgrcv(msgid2,&response,sizeof(struct packet),CLIENT_MSG_KEY,0)!=-1)
+if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)!=-1)
 {
    printf(" These are the details \n : ");
    printf("%s %s %s %s %d %d \n ",response.pac.data.first_name,response.pac.data.last_name,response.pac.data.skills,response.pac.data.contact,response.pac.data.emp_id,response.pac.data.experience);
@@ -216,7 +217,7 @@ if (msgsnd(msgid,&msg_buffer,sizeof(struct packet),0)==-1)
 else 
     printf("sent correctly \n :");
 
-if (msgrcv(msgid2,&response,sizeof(struct packet),CLIENT_MSG_KEY,0)==0)
+if (msgrcv(msgid2,&response,sizeof(struct packet),getpid(),0)==0)
 {
 // if (strcmp(response.pac.data.last_name,"exit")==0)
   //     return ;
@@ -241,7 +242,7 @@ if (msgsnd(msgid,&msg_buffer,sizeof(Packet),0)==-1)
 else 
 printf("sent correctly \n :");
 //printf("%s %s ",response.pac.data.first_name,response.pac.data.last_name);
-if (msgrcv(msgid2,&response,sizeof(Packet),CLIENT_MSG_KEY,0)==0)
+if (msgrcv(msgid2,&response,sizeof(Packet),getpid(),0)==0)
 {
  //if(strcmp(response.pac.data.last_name,"exit")==0)
   //return ;
