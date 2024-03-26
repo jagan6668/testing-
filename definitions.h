@@ -43,6 +43,6 @@ void records_with_experience(int experience);
 void *serve_client(void *p);
 void traverse();
 void sorting_with_emp_id();
-
+int compare_emp_ie(const void *a,const void *b);
 
 #endif    

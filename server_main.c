@@ -81,11 +81,17 @@ printf( "  CHECK msg_buffer.pac.data.frst_name :  %s\n ",msg_buffer.pac.data.fir
 	    printf("Records With Experience \n ");
 	    pthread_mutex_unlock(&mutex);
             break;
-       /*case 5:
+       case 5:
             pthread_mutex_lock(&mutex);
             sorting_with_emp_id();
             pthread_mutex_unlock(&mutex);
-            break;*/
+            break;  
+      case 6:
+            pthread_mutex_lock(&mutex);
+            sorting_with_first_name();
+            pthread_mutex_unlock(&mutex);
+            break;
+ 
         default:
             printf(" Invalid command \n ");
     }
